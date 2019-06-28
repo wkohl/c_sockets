@@ -35,7 +35,7 @@ FLow:
 int main() {
 
         // socket() call
-        int network_socket;
+        int server_socket;
 
         /*
         *  call socket function and store in  an integer
@@ -43,9 +43,8 @@ int main() {
         *  SOCK_STREAM  =       type of the socket (SOCK_STREAM -> tcp)
         *  0            =       protocol (0 -> default protocol (tcp))
         */
-        network_socket = socket(AF_INET, SOCK_STREAM, 0);
+        server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-        // bind() call
         /*
         * we need to connect to another socket (client)
         * we use the netinet header to we know the remote socket we connect to
@@ -55,41 +54,26 @@ int main() {
         server_address.sin_port = htons(9002);          // specify the port with conversion function (htons)
         server_address.sin_addr.s_addr = INADDR_ANY;    // specify the actual address (local host)
         
- 
+	// bind() call 
         /*
-        * call the connect function
+        * call the bind() function
         * network_socket                        =       actual socket
         * (struct sockaddr *) &server_address   =       cast server address structure
         * size_of(server_address)               =       size of the address
         */
-        connect(network_socket, (struct sockaddr *) &server_address, size_of(server_address);
+        bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address));
 
-        /*
-        * primitive error handling
-        * int connection_status = connect(network_socket, (struct sockaddr *) &server_address, size_of(server_address);
-        * if (connection_status == -1) {
-        *       printf("Some error");
-        * }
-        */
+	listen(server_socket, 5);
 
-        // listen() call
-        char server_response[256];                                              // string to hold data from server
+	int client_socket;
+	client_socket = accept(server_socket, NULL, NULL);
 
-        /*
-        * call the receive function
-        * network_socket                        =       socket
-        * &server_response                      =       location data will end up
-        * sizeof(server_response)               =       how much space we have
-        * 0                                     =       optional flags parameter
-        */
-        recv(network_socket, &server_response, sizeof(server_response), 0);     // call the receive function
+	// send() call
+	char server_message[256] = "Happy day.";
 
-        printf("recv'd: %s\n");                                                 // print response
+	send(client_socket, server_message, sizeof(server_message), 0);
 
-        close(network_socket);                                                  // close socket
-
-        // accept() call
-
+        close(server_socket);                                                  // close socket
 
         return 0;
 

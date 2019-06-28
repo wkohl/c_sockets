@@ -57,7 +57,7 @@ int main() {
         * size_of(server_address)               =       size of the address
         */
         
-        connect(network_socket, (struct sockaddr *) &server_address, size_of(server_address);   // connect() call
+        connect(network_socket, (struct sockaddr *) &server_address, sizeof(server_address));   // connect() call
 
         /*
         * primitive error handling
